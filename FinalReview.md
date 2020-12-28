@@ -198,7 +198,7 @@ Bellman-Ford
 
 > 注意Dummy Head的存在，而且这还一般在题目中是默认的。
 >
-> ![image-20201228184045261](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\FinalReview.assets\image-20201228184045261.png)
+> ![image-20201228184045261](FinalReview.assets\image-20201228184045261.png)
 
 - *头、 *尾
 
@@ -574,7 +574,7 @@ AOV网里面不应该出现有向环。用顶点表示活动，可用来表示�
 
 ## 复杂度在下图中
 
-![image-20201228235012862](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\FinalReview.assets\image-20201228235012862.png)
+![image-20201228235012862](FinalReview.assets\image-20201228235012862.png)
 
-![image-20201228235033075](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\FinalReview.assets\image-20201228235033075.png)
+![image-20201228235033075](FinalReview.assets\image-20201228235033075.png)
 
