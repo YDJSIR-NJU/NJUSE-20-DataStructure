@@ -422,7 +422,7 @@ public static long gcd( long m, long n ){
 
 ### 边和点的关系式
 
-m阶树
+对m阶树而言
 
 - $e = n - 1$
 - 第i层最多有 $m^i$个元素
@@ -974,71 +974,355 @@ template<class T> void MaxHeap<T>::Initialize (T a[],int size,int ArraySize){
 
 ## 概念理解
 
-各种图、完全图、简单图、路径、连通性
+各种图、完全图、简单图、子图、路径、简单通路等
 
 #### 有向图和无向图
 
 > 很多时候会造成很多区别
 
+#### 度
+
+##### 有向图
+
+###### 入度、出度与度
+
+$$
+TD(v)=ID(v)+OD(v)
+$$
+
+##### 无向图
+
+###### 度就是与这一顶点相连的边的数量
+
+#### 连通图/连通分量
+
+##### 强连通与弱联通
+
+- 无向图只有强连通和非联通
+- 有向图中如果对任意两顶点$i,j$都有从$i$到$j$`与`从$j$到$i$的通路，那么他是强连通的；
+- 有向图中如果对任意两顶点$i,j$都有从$i$到$j$`或`从$j$到$i$的通路，那么他是弱连通的；
+
 ## 图的表示
 
 ### 邻接矩阵 - 适合高密度的矩阵（节约空间）- 空间复杂度$O(n^2)$
 
+无向图下这是一个对称的矩阵。因此你可以只用考虑半边。
+
 ### 邻接表 - 适合稀疏矩阵（使用链表）
+
+$n$个顶点$e$条边的无向图的邻接表表示中有$n$个顶点表结点和$2e$个边表结点。(换句话说，每条边$(i,j)$在邻接表 中出现两次：一次在关于`i`的邻接表中，另一次在关于`j`的邻接表中)
+
+注意`getFirstNeighbour`和`getNextNeighbour`方法。
+
+##### 逆连接表
+
+从记出边到计入边
 
 ##### 邻接多重表(只是带过去没有细讲)
 
+在无向图中, 如果边数为m, 则在邻接表表示中需2m个单位来存储. 为了克服这一缺点, 采用邻接多重表, 每条边用一个结点表示。
+
+![image-20210115110724765](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210115110724765.png)
+
 ## 图的相关算法
 
-### 图的遍历
+### ==图的遍历==
 
 #### DFS 
 
+##### 邻接矩阵
 
+> 略
+
+##### 邻接表
+
+```c++
+template<NameType,DistType> void Graph<NameType,DistType> :: DFS( ){
+    int *visited=new int[NumVertices];
+    for ( int i=0; i<NumVertices; i++) visited[i]=0;DFS(0,visited); //从顶点0开始深度优先搜索delete[] visited;
+}
+
+template<NameType,DistType> void Graph<NameType,DistType> :: DFS(int v, visited[]){ 
+    cout<<GetValue(v)<<‗‘;
+    visited[v]=1;
+    int w=GetFirstNeighbor(v);
+    while (w!=-1){ 
+        if(!visited[w]) DFS(w,visited);
+        w=GetNextNeighbor(v,w);
+    }
+}
+```
 
 #### BFS
 
+##### 邻接矩阵
 
+> 略
+
+##### 邻接表
+
+```c++
+template<NameType,DistType> void Graph<NameType,DistType> :: BFS(int v){
+    int* visited=new int[NumVertices];
+    for (int i=0; i<NumVertices; i++) visited[i]=0;
+    cout<<GetValue(v)<<‗‘;
+    visited[v]=1;queue<int> q;
+    q.EnQueue(v);
+    while(!q.IsEmpty()){ 
+        v=q.DeQueue();
+        int w=GetFirstNeighbor(v);
+        while (w!=-1){ 
+            if(!visited[w]){
+                cout<<GetValue(w)<<‗‘;
+                visited[w]=1;q.EnQueue(w);
+            }
+            w=GetNextNeighbor(v,w);
+        }
+    }
+    delete[] visited;
+}
+```
 
 #### 邻接表下BFS和DFS都是 $O(n+e)$
 
 #### 邻接矩阵下BFS和DFS都是 $O(n²)$
 
-
-
 ### 最小生成树
 
-#### ==Kruskal== - 基于边 - $O(n²)$
+#### 设$G=(V，E)$是一个**连通的无向图**（或是**强连通有向图**）,
 
+从图G中的任一顶点出发作遍历图的操作，把遍历走过的边的集合记为$TE(G)$，显然$G'=(V，TE)$是G之子图，G'被称为G的生成树（spanning tree）。
 
+生成树是不唯一的，但一定有$n-1$条边。
+
+#### ==Kruskal== - 基于边 - $O(|E|log⁡|V|)$
+
+> PPT上面的示范代码的确是$O(e log_2 n+n^2)$，由于$e$最大可以取到$\frac{n (n - 1)}{2}$ ，达到了$O(n^2)$量级，故$e log_2 e$ 可以做到比$n ^ 2$ 量级大，但也可能因为e比较小而导致它的量级更小。
+
+先把边按权值从小到大排（建堆），然后依次往结果边集里面加，每加一次都要检查是否成环（并查集），加到$n - 1$条边即可。
+
+```c++
+void Graph<string , float>::Kruskal(MinSpanTree&T){ 
+    MSTEdgeNode e;
+    MinHeap<MSTEdgeNode>H(currentEdges);
+    int NumVertices=VerticesList.Last , u , v;
+    Ufsets F(NumVertices); //建立n个单元素的连通分量for(u=0;u<NumVertices;u++)
+    for (v=u+1;v<NumVertices;v++)if(Edge[u][v]!=MAXINT){
+        e.tail=u;
+        e.head=v;
+        e.cost=Edge[u][v];
+        H.insert(e);}
+    int count=1; //生成树边计数
+    while(count<NumVertices){ 
+        H.RemoveMin(e);u=F.Find(e.tail);// 防止成环 
+        v=F.Find(e.head);
+        if(u!=v){
+            F.union(u,v);
+            T.Insert(e);
+            count++;
+        }
+    }
+}
+```
 
 #### ==Prim== - 基于点 - $O(n²)$
 
+任取一个边开始，每次都找已选点集 $u$ 到未选点集 $v$ 之间的最短边加入边集中，并将该边另一顶点加入已选点集中，直至已加入所有点集。
 
+复杂度用连接表不优化可能要$O(n^3)$复杂度。
 
 ### 最短路径
 
-#### ==Dijkstra== - $O(n²)$ - 无负权值
+设$G=(V,E)$是一个带权图（有向，无向），如果从顶点$v$到顶点$w$的一条路径为$(v,v1,v2,…,w)$，其路径长度不大于从$v$到$w$的所有其它路径的长度，则该路径为从$v$到$w$的最短路径。
 
+#### ==Dijkstra== - $O(n²)$ - 无负权值单源最短路径
 
+> 关键：贪心思想
+
+```java
+/**
+	path数组记录从源节点这一节点到目标结点路径上的倒数第二个节点，以此类推
+	dist数组记录到该点的当前已知最短路径长度
+	s记录该点是否已经加入已选点集中
+	图用邻接矩阵表示
+**/
+public int[] shortestpath(int v){
+    int n = this.numOfVertex;
+    // 初始化
+    for( int i=0; i<n; i++){
+        dist[i]=Edge[v][i]; 
+        s[i]=0;
+        if( i!=v && dist[i]< MAXNUM ) path[i]=v;
+        else path[i]=-1;
+    }
+    s[v]=1; 
+    dist[v]=0;
+    for( i=0; i<n-1; i++){
+        float min=MAXNUM; 
+        int u = v;
+        // 找出最近的点集
+        for( int j=0; j<n; j++)
+            if( !s[j] && dist[j]<min ) { 
+                u=j; 
+                min=dist[j];
+            }
+            s[u]=1;// 把这个最近的点纳入已知点集中
+        // 更新距离
+        for ( int w=0; w<n; w++)
+            if( !s[w] && Edge[u][w] < MAXNUM && dist[u] + Edge[u][w] < dist[w]){ 
+                // 只需要考虑未被加入点集中的点
+                dist[w]=dist[u]+Edge[u][w]; 
+                path[w]=u;
+            }
+    }
+    return path;
+}
+```
+
+按最短路径长度递增的次序产生最短路径。
 
 #### ==Bellman-Ford== - $O(n³)$ - 无负环
 
+> 关键：动态规划
+>
+> 递推公式（动态规划所需要的）
+> $$
+> dist^1[u]=Edge[v][u]
+> $$
+>
+> $$
+> dist^k[u]=min{distk-1[u],min\{dist^{k-1}[j]+Edge[j][u]}\}, j=0,1,2,…,n-1
+> $$
 
+```java
+public int[] BellmanFord(int v){
+    int n = this.numOfVertex;
+    for(int i=0;i<n;i++){ 
+        dist[i]=Edge[v][i];
+        if(i!=v&&dist[i]<MAXNUM)
+            path[i]=v;
+        else path[i]=-1;
+    }
+    for (int k=2;k<n;k++) // 事实上可以不做满这么多次，当你发现距离数组已经不变化的时候就可以不做了
+        for(int u=0;u<n;u++)
+            if(u!=v)
+                for(i=0;i<n;i++) 
+                    if (Edge[i][u]< >0 && Edge[i][u]<MAXNUM && dist[u]>dist[i]+Edge[i][u]){
+                        dist[u]=dist[i]+Edge[i][u];
+                        path[u]=i;
+                    }
+    return path;
+}
+```
+
+和Dijkstra的一个鲜明区别是它不用考虑什么加不加入点集，他直接就把所有的距离都更新一次，保留了更多的结果。也正因如此，它能够解决负权值问题。
 
 #### ==Floyd== - $O(n³)$ - 无负权值 - 所有点到所有点的最短路径
+
+##### 所有顶点之间的最短路径（Floyed)前提：各边权值均大于0的带权有向图。
+
+1) 把有向图的每一个顶点作为源点，重复执行Dijkstra算法$n$次，执行时间为$O(n^3)$
+
+2) Floyed方法，算法形式更简单些，但是时间仍然是$O(n3)$
+
+> 回忆离散课的内容
+
+```java
+public int[][] Alllength(int n){
+    for(int i=0; i<n; i++)
+        for(int j=0; j<n; j++){ 
+            a[i][j]=Edge[i][j]; 
+            if(i==j) a[i][j]=0;
+            if(i< >j&&a[i][j]<MAXNUM) 
+                path[i][j]=i;
+            else path[i][j]=0;
+        }
+    for(int k=0; k<n; k++)
+        for(int i=0; i<n; i++)
+            for(int j=0; j<n; j++)
+                if( a[i][k]+a[k][j]<a[i][j] ){
+                    a[i][j]=a[i][k]+a[k][j];
+                    path[i][j]=path[k][j];
+                }
+    return path;
+}
+```
 
 
 
 ### 找出有向图中所有的环
 
+```java
+public class GetAllCyclesForDirectedGraph{
+    static List<Integer> trace; // 当前搜索路径
+    static Set<Integer> searched = new HashSet<>(); // 已被搜索过的节点
+    static Set<List<Integer>> allCircles = new HashSet<>(); // 结果的收集列表
 
+    public static void main(String[] args) {
+        int[][] e = { // 此处的图用邻接矩阵表示
+                 {0,1,1,0,0,0,0},
+                 {0,0,0,1,0,0,0},
+                 {0,0,0,0,0,1,0},
+                 {0,0,0,0,1,0,0},
+                 {0,0,1,0,0,0,0},
+                 {0,0,0,0,1,0,1},
+                 {1,0,1,0,0,0,0}};
+        findCircles(e);
+    }
+
+    public static void findCircles(int[][] e){
+        int n = e.length;
+        for(int i = 0; i < n; i++){
+            // 如果一个节点已经被搜索过一次，那么即使他出现在另一个环中，它也必然在搜索另外那个环中其他节点的时候被提及，这一步事实上完成了去重
+            if(searched.contains(i))
+                continue;
+            trace = new ArrayList<>();
+            findCycle(i,e);
+        }
+
+        if(allCircles.size() == 0){
+            System.out.println("There aren't any CIRCLES in the graph!");
+        }
+        int cnt = 1;
+        for(List<Integer> list:allCircles) {
+            System.out.println("CIRCLE" + cnt + ": " + list);
+            cnt++;
+        }
+    }
+
+    /**
+     * 利用DFS算法，从节点v开始寻路
+      * @param v
+     * @param e
+     */
+    private static void findCycle(int v, int[][]e){
+        int j = trace.indexOf(v);
+        if( j != -1) {
+            List<Integer> circle = new ArrayList<>();
+            while(j < trace.size()) {
+                circle.add(trace.get(j));
+                j++;
+            }
+            Collections.sort(circle); // 找出一条环路，对路径内节点进行排序
+            allCircles.add(circle);
+            return;
+        }
+
+        trace.add(v);
+        for(int i = 0; i < e.length; i++) {
+             if(e[v][i] == 1){
+                 searched.add(i);
+                 findCycle(i,e); // 递归查找
+                 }
+            }
+        trace.remove(trace.size() - 1); // 回溯
+        }
+}
+```
 
 ### 找出无向图中所有的环
 
-```java
-
-```
+参考Kruskal中的代码。
 
 ## 图的应用
 
@@ -1090,8 +1374,6 @@ public void topSort( ) throws CycleFound{
 
 2) 关键路径：具有从开始顶点(源点）→完成顶点（汇点）的最长的路径
 
-### 关键路径上的点便是关键活动
-
 #### 对事件而言
 
 $Ve[i]$－表示事件$Vi$的可能最早发生时间，定义为从源点$V_0$ → $V_i$的最长路径长度，（得满足前置条件）
@@ -1100,13 +1382,23 @@ $Vl[i]$－表示事件$Vi$的允许的最晚发生时间。是在保证汇点$Vn
 
 #### 对活动而言
 
+$e[k]$－表示活动$a_k=<V_i,V_j>$的可能的最早开始时间。即等于事件$V_i$的可能最早发生时间。 $e[k]=Ve[i]$
 
+$l[k]$－表示活动ak= <Vi,Vj> 的允许的最迟开始时间
+$$
+l[k]＝Vl[j]-dur(<i,j>);
+$$
+$s[k]$－表示活动$a_k$的最早可能开始时间和最迟
+$$
+s[k] = l[k]-e[k]
+$$
+$s[k] = 0$ 表示这是一个关键活动。
 
-
+以上的计算必须在拓扑有序及逆拓扑有序的前提下进行。求$Ve[i]$必须使$V_i$的所有前驱结点的$V_e$都求得求$Vl[i]$必须使$Vi$的所有后继结点最晚发生时间都求得。
 
 # 第九章 排序
 
-排序：n个对象的序列R[0],R[1],R[2],…R[n-1]，按其`关键码`的大小，进行由小到大（非递减）或由大到小（非递增）的次序重新排列。
+排序：$n$个对象的序列$R[0],R[1],R[2],…R[n-1]$，按其`关键码`的大小，进行由小到大（非递减）或由大到小（非递增）的次序重新排列。
 
 > Java的`Comparable`接口和C++的运算符重载
 
@@ -1124,7 +1416,7 @@ $Vl[i]$－表示事件$Vi$的允许的最晚发生时间。是在保证汇点$Vn
 
 > 缩小增量排序（diminishing－increament sort）
 
-1）取一增量（间隔gap<n），按增量分组，对每组使用**直接插入排序**或**其他方法**进行排序。
+1）取一增量（间隔 $gap < n$），按增量分组，对每组使用**直接插入排序**或**其他方法**进行排序。
 
 2）减少增量（分的组减少，但每组记录增多）。直至增量为1，即为一个组时。
 
@@ -1249,9 +1541,7 @@ template<class Type> void merge(datalist<Type> & initList, datalist<Type> & merg
 
 ###### 如果是对链表操作，分割链表需要改为切断链表（指针置为空），然后合并的时候再连起来
 
-
-
-## 复杂度如下图所示
+## 总结
 
 ![image-20201228235012862](FinalReview.assets\image-20201228235012862.png)
 
