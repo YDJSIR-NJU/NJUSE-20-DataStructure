@@ -564,7 +564,7 @@ public static void levelTravel(Node root){
 
 #### 后缀表达式
 
-> $(a+b)*c → ab+c* → $ ![image-20210114203404279](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210114203404279.png)
+> $(a+b)*c → ab+c* → $ ![image-20210114203404279](FinalReview.assets\image-20210114203404279.png)
 >
 > 递归 + 栈
 
@@ -578,7 +578,7 @@ public static void levelTravel(Node root){
 
 #### 双亲
 
-![image-20210114201901232](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210114201901232.png)
+![image-20210114201901232](FinalReview.assets\image-20210114201901232.png)
 
 这种表示方法适用于经常查找父节点的情况（应用：并查集）
 
@@ -798,13 +798,13 @@ protected HuffmanNode(int key, HuffmanNode left, HuffmanNode right, HuffmanNode 
 
 | 初始状态                                                     | 操作过程与结果                                               |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190408220008127.png) | ![image-20210114224159941](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210114224159941.png) |
+| ![在这里插入图片描述](https://img-blog.csdnimg.cn/20190408220008127.png) | ![image-20210114224159941](FinalReview.assets\image-20210114224159941.png) |
 
 ##### RL-先右后左
 
 | 初始状态                                                  | 操作过程与结果                                               |
 | --------------------------------------------------------- | ------------------------------------------------------------ |
-| ![img](https://img-blog.csdnimg.cn/20190408215326866.png) | ![image-20210114224517086](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210114224517086.png) |
+| ![img](https://img-blog.csdnimg.cn/20190408215326866.png) | ![image-20210114224517086](FinalReview.assets\image-20210114224517086.png) |
 
 >  注意到树的整理应该是由下而上递归进行的！
 >
@@ -1022,7 +1022,7 @@ $n$个顶点$e$条边的无向图的邻接表表示中有$n$个顶点表结点�
 
 在无向图中, 如果边数为m, 则在邻接表表示中需2m个单位来存储. 为了克服这一缺点, 采用邻接多重表, 每条边用一个结点表示。
 
-![image-20210115110724765](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210115110724765.png)
+![image-20210115110724765](FinalReview.assets\image-20210115110724765.png)
 
 ## 图的相关算法
 
@@ -1537,7 +1537,7 @@ template<class Type> void merge(datalist<Type> & initList, datalist<Type> & merg
 
 #### 迭代的归并排序
 
-![image-20210115092754165](C:\Users\YuDongjun\Desktop\NJU\2020-Fall\DataStructureAndAlgorithm\20NJUSE-DataStructure\FinalReview.assets\image-20210115092754165.png)
+![image-20210115092754165](FinalReview.assets\image-20210115092754165.png)
 
 ###### 如果是对链表操作，分割链表需要改为切断链表（指针置为空），然后合并的时候再连起来
 
