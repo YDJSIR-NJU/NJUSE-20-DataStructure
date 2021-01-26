@@ -1547,3 +1547,8 @@ template<class Type> void merge(datalist<Type> & initList, datalist<Type> & merg
 
 ![image-20201228235033075](FinalReview.assets\image-20201228235033075.png)
 
+- 注意到二分插入排序和直接选择排序的**比较次数**是固定的；
+
+- 快速排序在已经排好序的情况下反而需要 $\frac{n * (n - 1)}{2}$ 次比较；
+- 直接选择排序的移动次数耶斯固定的；
+- 归并和表插入排序的辅助存储为$O(n$)量级，快排是$O(log_2 n)$量级
